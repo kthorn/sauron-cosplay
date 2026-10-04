@@ -1,0 +1,16 @@
+test_wide_head_labels_fit (test_mace.TestExports.test_wide_head_labels_fit) ... /home/kurtt/sauron-cosplay/test_mace.py:279: DeprecationWarning: Image.Image.getdata is deprecated and will be removed in Pillow 14 (2027-10-15). Use get_flattened_data instead.
+  self.assertFalse(any(min(pixel) < 240 for pixel in border.getdata()), "full SVG clips right-side labels")
+FAIL
+
+======================================================================
+FAIL: test_wide_head_labels_fit (test_mace.TestExports.test_wide_head_labels_fit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 279, in test_wide_head_labels_fit
+    self.assertFalse(any(min(pixel) < 240 for pixel in border.getdata()), "full SVG clips right-side labels")
+AssertionError: True is not false : full SVG clips right-side labels
+
+----------------------------------------------------------------------
+Ran 1 test in 2.008s
+
+FAILED (failures=1)

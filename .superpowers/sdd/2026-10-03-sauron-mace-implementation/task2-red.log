@@ -1,0 +1,95 @@
+test_default_exports (test_mace.TestExports.test_default_exports) ... FAIL
+test_missing_pdf_tool (test_mace.TestExports.test_missing_pdf_tool) ... FAIL
+test_page_count_changes (test_mace.TestExports.test_page_count_changes) ... FAIL
+test_paths_and_cwd (test_mace.TestExports.test_paths_and_cwd) ... FAIL
+test_pdf_scale_corruption (test_mace.TestExports.test_pdf_scale_corruption) ... FAIL
+test_stations_on_pages (test_mace.TestExports.test_stations_on_pages) ... FAIL
+test_stl_contamination (test_mace.TestExports.test_stl_contamination) ... FAIL
+test_svg_scale_corruption (test_mace.TestExports.test_svg_scale_corruption) ... FAIL
+test_unowned_collision_not_overwritten (test_mace.TestExports.test_unowned_collision_not_overwritten) ... FAIL
+test_unsafe_manifest_paths (test_mace.TestExports.test_unsafe_manifest_paths) ... FAIL
+
+======================================================================
+FAIL: test_default_exports (test_mace.TestExports.test_default_exports)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 144, in setUp
+    self.assertTrue(hasattr(model, "build") and hasattr(model, "validate_exports"),
+AssertionError: False is not true : Export build/verification interface has not been implemented
+
+======================================================================
+FAIL: test_missing_pdf_tool (test_mace.TestExports.test_missing_pdf_tool)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 144, in setUp
+    self.assertTrue(hasattr(model, "build") and hasattr(model, "validate_exports"),
+AssertionError: False is not true : Export build/verification interface has not been implemented
+
+======================================================================
+FAIL: test_page_count_changes (test_mace.TestExports.test_page_count_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 144, in setUp
+    self.assertTrue(hasattr(model, "build") and hasattr(model, "validate_exports"),
+AssertionError: False is not true : Export build/verification interface has not been implemented
+
+======================================================================
+FAIL: test_paths_and_cwd (test_mace.TestExports.test_paths_and_cwd)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 144, in setUp
+    self.assertTrue(hasattr(model, "build") and hasattr(model, "validate_exports"),
+AssertionError: False is not true : Export build/verification interface has not been implemented
+
+======================================================================
+FAIL: test_pdf_scale_corruption (test_mace.TestExports.test_pdf_scale_corruption)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 144, in setUp
+    self.assertTrue(hasattr(model, "build") and hasattr(model, "validate_exports"),
+AssertionError: False is not true : Export build/verification interface has not been implemented
+
+======================================================================
+FAIL: test_stations_on_pages (test_mace.TestExports.test_stations_on_pages)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 144, in setUp
+    self.assertTrue(hasattr(model, "build") and hasattr(model, "validate_exports"),
+AssertionError: False is not true : Export build/verification interface has not been implemented
+
+======================================================================
+FAIL: test_stl_contamination (test_mace.TestExports.test_stl_contamination)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 144, in setUp
+    self.assertTrue(hasattr(model, "build") and hasattr(model, "validate_exports"),
+AssertionError: False is not true : Export build/verification interface has not been implemented
+
+======================================================================
+FAIL: test_svg_scale_corruption (test_mace.TestExports.test_svg_scale_corruption)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 144, in setUp
+    self.assertTrue(hasattr(model, "build") and hasattr(model, "validate_exports"),
+AssertionError: False is not true : Export build/verification interface has not been implemented
+
+======================================================================
+FAIL: test_unowned_collision_not_overwritten (test_mace.TestExports.test_unowned_collision_not_overwritten)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 144, in setUp
+    self.assertTrue(hasattr(model, "build") and hasattr(model, "validate_exports"),
+AssertionError: False is not true : Export build/verification interface has not been implemented
+
+======================================================================
+FAIL: test_unsafe_manifest_paths (test_mace.TestExports.test_unsafe_manifest_paths)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 144, in setUp
+    self.assertTrue(hasattr(model, "build") and hasattr(model, "validate_exports"),
+AssertionError: False is not true : Export build/verification interface has not been implemented
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.001s
+
+FAILED (failures=10)

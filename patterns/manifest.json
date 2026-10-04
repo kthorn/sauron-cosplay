@@ -1,0 +1,387 @@
+{
+  "cad": {
+    "parameters": {
+      "overall_length": 889,
+      "blade_length": 295.275,
+      "head_radius": 65,
+      "pipe_od": 26.67,
+      "bore_clearance": 0.5,
+      "foam_thickness": 10,
+      "slot_clearance": 0.5,
+      "adapter_od": 60,
+      "adapter_height": 16,
+      "slot_root_radius": 18.5,
+      "cover_allowance": 3,
+      "land_allowance": 3,
+      "coupon_height": 5,
+      "tip_od": 36,
+      "tip_overlap": 15,
+      "tip_extension": 35,
+      "tip_end_radius": 4,
+      "crown_recess": 12,
+      "pin_d": 4,
+      "pin_length": 6,
+      "pin_clearance": 0.4,
+      "pommel_od": 40,
+      "pommel_height": 40,
+      "pommel_extension": 15
+    },
+    "blade_points": [
+      [
+        18.5,
+        0
+      ],
+      [
+        37,
+        16
+      ],
+      [
+        33,
+        34
+      ],
+      [
+        48,
+        34
+      ],
+      [
+        59,
+        62
+      ],
+      [
+        47,
+        57
+      ],
+      [
+        65,
+        95
+      ],
+      [
+        50,
+        118
+      ],
+      [
+        58,
+        185
+      ],
+      [
+        47,
+        203
+      ],
+      [
+        53,
+        214
+      ],
+      [
+        45,
+        236
+      ],
+      [
+        57,
+        250
+      ],
+      [
+        38,
+        262
+      ],
+      [
+        36,
+        295.275
+      ],
+      [
+        29,
+        279
+      ],
+      [
+        25,
+        255
+      ],
+      [
+        18.5,
+        236
+      ],
+      [
+        18.5,
+        214
+      ],
+      [
+        26,
+        197
+      ],
+      [
+        31,
+        163
+      ],
+      [
+        27,
+        128
+      ],
+      [
+        23,
+        96
+      ],
+      [
+        18.5,
+        56
+      ],
+      [
+        18.5,
+        34
+      ],
+      [
+        23,
+        18
+      ]
+    ],
+    "blade_bounds": [
+      18.5,
+      0,
+      65,
+      295.275
+    ],
+    "bore_diameter": 27.17,
+    "slot_width": 10.5,
+    "stations": [
+      45,
+      225
+    ],
+    "land_bands": [
+      [
+        34,
+        56
+      ],
+      [
+        214,
+        236
+      ]
+    ],
+    "pipe_span": [
+      15,
+      854
+    ],
+    "blade_base": 593.725,
+    "top_cap_start": 245.275,
+    "top_cap_radius": 18,
+    "adapter_radius": 30,
+    "adapter_height": 16,
+    "coupon_height": 5,
+    "cover_radius": 16.335,
+    "holder_span": [
+      37,
+      283.275
+    ],
+    "holder_split": 160.137,
+    "holder_profile": [
+      [
+        24,
+        0
+      ],
+      [
+        27,
+        8
+      ],
+      [
+        27,
+        16
+      ],
+      [
+        19.5,
+        51
+      ],
+      [
+        30,
+        168
+      ],
+      [
+        23.5,
+        212.275
+      ],
+      [
+        19.5,
+        226.275
+      ],
+      [
+        0,
+        246.275
+      ]
+    ],
+    "blade_inner_edge": [
+      [
+        36,
+        295.275
+      ],
+      [
+        29,
+        279
+      ],
+      [
+        25,
+        255
+      ],
+      [
+        18.5,
+        236
+      ],
+      [
+        18.5,
+        214
+      ],
+      [
+        26,
+        197
+      ],
+      [
+        31,
+        163
+      ],
+      [
+        27,
+        128
+      ],
+      [
+        23,
+        96
+      ],
+      [
+        18.5,
+        56
+      ],
+      [
+        18.5,
+        34
+      ],
+      [
+        23,
+        18
+      ],
+      [
+        18.5,
+        0
+      ]
+    ],
+    "holder_bore_height": 224.275,
+    "holder_body_span": [
+      37,
+      233
+    ],
+    "holder_pins": [
+      18.0395,
+      4,
+      6,
+      0.4
+    ],
+    "svg_axes": [
+      1,
+      -1
+    ]
+  },
+  "native_viewbox": [
+    18.0,
+    -296.0,
+    47.0,
+    296.0
+  ],
+  "full_svg": {
+    "size_mm": [
+      150,
+      351.0
+    ],
+    "origin": [
+      8.0,
+      -321.0
+    ]
+  },
+  "pages": [
+    {
+      "format": "a4",
+      "size_mm": [
+        210,
+        297
+      ],
+      "origin": [
+        18.0,
+        -296.0
+      ],
+      "row": 0,
+      "column": 0,
+      "number": 1,
+      "count": 2,
+      "svg": "patterns/blade-a4-01.svg",
+      "pdf": "patterns/blade-a4-01.pdf"
+    },
+    {
+      "format": "a4",
+      "size_mm": [
+        210,
+        297
+      ],
+      "origin": [
+        18.0,
+        -64.0
+      ],
+      "row": 1,
+      "column": 0,
+      "number": 2,
+      "count": 2,
+      "svg": "patterns/blade-a4-02.svg",
+      "pdf": "patterns/blade-a4-02.pdf"
+    },
+    {
+      "format": "letter",
+      "size_mm": [
+        215.9,
+        279.4
+      ],
+      "origin": [
+        18.0,
+        -296.0
+      ],
+      "row": 0,
+      "column": 0,
+      "number": 1,
+      "count": 2,
+      "svg": "patterns/blade-letter-01.svg",
+      "pdf": "patterns/blade-letter-01.pdf"
+    },
+    {
+      "format": "letter",
+      "size_mm": [
+        215.9,
+        279.4
+      ],
+      "origin": [
+        18.0,
+        -81.60000000000002
+      ],
+      "row": 1,
+      "column": 0,
+      "number": 2,
+      "count": 2,
+      "svg": "patterns/blade-letter-02.svg",
+      "pdf": "patterns/blade-letter-02.pdf"
+    }
+  ],
+  "owned": [
+    "patterns/blade.svg",
+    "prints/adapter.stl",
+    "prints/fit-coupon.stl",
+    "prints/holder.stl",
+    "prints/holder-lower.stl",
+    "prints/holder-upper.stl",
+    "patterns/blade-a4-01.svg",
+    "patterns/blade-a4-01.pdf",
+    "patterns/blade-a4-02.svg",
+    "patterns/blade-a4-02.pdf",
+    "patterns/blade-letter-01.svg",
+    "patterns/blade-letter-01.pdf",
+    "patterns/blade-letter-02.svg",
+    "patterns/blade-letter-02.pdf",
+    "patterns/manifest.json"
+  ],
+  "source_fingerprint": {
+    "mace.scad": "281dc20f1b3e9a6dbabedccc3872ecddb308ed591ff417078790e07b3abccd4d",
+    "export.py": "826b3ddf823fe35c65785be4db4ba747cde5859da9c2de2d2c31b85ba128b4af"
+  },
+  "margin_mm": 10,
+  "overlap_mm": 10,
+  "outline_tolerance_mm": 0.1
+}

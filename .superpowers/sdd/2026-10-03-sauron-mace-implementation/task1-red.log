@@ -1,0 +1,95 @@
+test_assembly_renders (test_mace.TestCad.test_assembly_renders) ... FAIL
+test_defaults (test_mace.TestCad.test_defaults) ... FAIL
+test_invalid_fit_rejected (test_mace.TestCad.test_invalid_fit_rejected) ... FAIL
+test_measured_sizes (test_mace.TestCad.test_measured_sizes) ... FAIL
+test_missing_tool (test_mace.TestCad.test_missing_tool) ... FAIL
+test_profile (test_mace.TestCad.test_profile) ... FAIL
+test_scaled_stations_fixed_lands (test_mace.TestCad.test_scaled_stations_fixed_lands) ... FAIL
+test_short_blade_rejected (test_mace.TestCad.test_short_blade_rejected) ... FAIL
+test_unknown_and_nonfinite_overrides (test_mace.TestCad.test_unknown_and_nonfinite_overrides) ... FAIL
+test_zero_exit_error_rejected (test_mace.TestCad.test_zero_exit_error_rejected) ... FAIL
+
+======================================================================
+FAIL: test_assembly_renders (test_mace.TestCad.test_assembly_renders)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 30, in setUp
+    self.assertTrue(MODEL_AVAILABLE, "CAD/render interface has not been implemented")
+AssertionError: False is not true : CAD/render interface has not been implemented
+
+======================================================================
+FAIL: test_defaults (test_mace.TestCad.test_defaults)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 30, in setUp
+    self.assertTrue(MODEL_AVAILABLE, "CAD/render interface has not been implemented")
+AssertionError: False is not true : CAD/render interface has not been implemented
+
+======================================================================
+FAIL: test_invalid_fit_rejected (test_mace.TestCad.test_invalid_fit_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 30, in setUp
+    self.assertTrue(MODEL_AVAILABLE, "CAD/render interface has not been implemented")
+AssertionError: False is not true : CAD/render interface has not been implemented
+
+======================================================================
+FAIL: test_measured_sizes (test_mace.TestCad.test_measured_sizes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 30, in setUp
+    self.assertTrue(MODEL_AVAILABLE, "CAD/render interface has not been implemented")
+AssertionError: False is not true : CAD/render interface has not been implemented
+
+======================================================================
+FAIL: test_missing_tool (test_mace.TestCad.test_missing_tool)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 30, in setUp
+    self.assertTrue(MODEL_AVAILABLE, "CAD/render interface has not been implemented")
+AssertionError: False is not true : CAD/render interface has not been implemented
+
+======================================================================
+FAIL: test_profile (test_mace.TestCad.test_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 30, in setUp
+    self.assertTrue(MODEL_AVAILABLE, "CAD/render interface has not been implemented")
+AssertionError: False is not true : CAD/render interface has not been implemented
+
+======================================================================
+FAIL: test_scaled_stations_fixed_lands (test_mace.TestCad.test_scaled_stations_fixed_lands)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 30, in setUp
+    self.assertTrue(MODEL_AVAILABLE, "CAD/render interface has not been implemented")
+AssertionError: False is not true : CAD/render interface has not been implemented
+
+======================================================================
+FAIL: test_short_blade_rejected (test_mace.TestCad.test_short_blade_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 30, in setUp
+    self.assertTrue(MODEL_AVAILABLE, "CAD/render interface has not been implemented")
+AssertionError: False is not true : CAD/render interface has not been implemented
+
+======================================================================
+FAIL: test_unknown_and_nonfinite_overrides (test_mace.TestCad.test_unknown_and_nonfinite_overrides)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 30, in setUp
+    self.assertTrue(MODEL_AVAILABLE, "CAD/render interface has not been implemented")
+AssertionError: False is not true : CAD/render interface has not been implemented
+
+======================================================================
+FAIL: test_zero_exit_error_rejected (test_mace.TestCad.test_zero_exit_error_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 30, in setUp
+    self.assertTrue(MODEL_AVAILABLE, "CAD/render interface has not been implemented")
+AssertionError: False is not true : CAD/render interface has not been implemented
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.001s
+
+FAILED (failures=10)

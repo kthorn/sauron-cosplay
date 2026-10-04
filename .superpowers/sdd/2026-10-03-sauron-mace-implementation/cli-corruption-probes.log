@@ -1,0 +1,5 @@
+SVG cut scale90%, bar unchanged; exit= 1 Export/verification failed: SVG outline geometry/scale mismatch: /tmp/mace-cli-proof-gohisn5b/patterns/blade.svg
+Restored exit= 0 Verified actual SVG/PDF outlines and both STL meshes: /tmp/mace-cli-proof-gohisn5b
+PDF cut scale90%, bar unchanged; exit= 1 Export/verification failed: PDF outline geometry/scale mismatch: /tmp/mace-pdf-check-dxk7rqsu/page.svg
+Restored exit= 0 Verified actual SVG/PDF outlines and both STL meshes: /tmp/mace-cli-proof-gohisn5b
+Current-revision CLI negatives bind; actual deliverables unchanged.

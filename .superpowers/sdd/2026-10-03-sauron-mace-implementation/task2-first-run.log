@@ -1,0 +1,35 @@
+test_assembly_renders (test_mace.TestCad.test_assembly_renders) ... ok
+test_defaults (test_mace.TestCad.test_defaults) ... ok
+test_invalid_fit_rejected (test_mace.TestCad.test_invalid_fit_rejected) ... ok
+test_measured_sizes (test_mace.TestCad.test_measured_sizes) ... ok
+test_missing_tool (test_mace.TestCad.test_missing_tool) ... ok
+test_profile (test_mace.TestCad.test_profile) ... ok
+test_scaled_stations_fixed_lands (test_mace.TestCad.test_scaled_stations_fixed_lands) ... ok
+test_short_blade_rejected (test_mace.TestCad.test_short_blade_rejected) ... ok
+test_unknown_and_nonfinite_overrides (test_mace.TestCad.test_unknown_and_nonfinite_overrides) ... ok
+test_zero_exit_error_rejected (test_mace.TestCad.test_zero_exit_error_rejected) ... ok
+setUpClass (test_mace.TestExports) ... ERROR
+
+======================================================================
+ERROR: setUpClass (test_mace.TestExports)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 141, in setUpClass
+    cls.manifest = model.build(Path(cls.template.name))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kurtt/sauron-cosplay/export.py", line 522, in build
+    validate_exports(stage)
+  File "/home/kurtt/sauron-cosplay/export.py", line 483, in validate_exports
+    all_ink[page["format"]].extend(check(svg, origin, page["size_mm"], box, pdf=True))
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kurtt/sauron-cosplay/export.py", line 456, in check
+    bar = _bounds(ink["red"])
+          ^^^^^^^^^^^^^^^^^^^
+  File "/home/kurtt/sauron-cosplay/export.py", line 163, in _bounds
+    raise ValueError("Missing outline/ink geometry")
+ValueError: Missing outline/ink geometry
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.764s
+
+FAILED (errors=1)

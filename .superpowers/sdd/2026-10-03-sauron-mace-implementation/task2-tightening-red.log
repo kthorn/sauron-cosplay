@@ -1,0 +1,25 @@
+test_stale_output_rejected (test_mace.TestCad.test_stale_output_rejected) ... FAIL
+test_bore_size_corruption (test_mace.TestExports.test_bore_size_corruption) ... FAIL
+
+======================================================================
+FAIL: test_stale_output_rejected (test_mace.TestCad.test_stale_output_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 134, in test_stale_output_rejected
+    with self.assertRaisesRegex(RuntimeError, "no.*output"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeError not raised
+
+======================================================================
+FAIL: test_bore_size_corruption (test_mace.TestExports.test_bore_size_corruption)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/kurtt/sauron-cosplay/test_mace.py", line 242, in test_bore_size_corruption
+    with self.assertRaisesRegex(ValueError, "STL.*bore"):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.463s
+
+FAILED (failures=2)

@@ -1,0 +1,15 @@
+test_assembly_renders (test_mace.TestCad.test_assembly_renders) ... ok
+test_defaults (test_mace.TestCad.test_defaults) ... ok
+test_invalid_fit_rejected (test_mace.TestCad.test_invalid_fit_rejected) ... ok
+test_measured_sizes (test_mace.TestCad.test_measured_sizes) ... ok
+test_missing_tool (test_mace.TestCad.test_missing_tool) ... ok
+test_profile (test_mace.TestCad.test_profile) ... ok
+test_scaled_stations_fixed_lands (test_mace.TestCad.test_scaled_stations_fixed_lands) ... ok
+test_short_blade_rejected (test_mace.TestCad.test_short_blade_rejected) ... ok
+test_unknown_and_nonfinite_overrides (test_mace.TestCad.test_unknown_and_nonfinite_overrides) ... ok
+test_zero_exit_error_rejected (test_mace.TestCad.test_zero_exit_error_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.134s
+
+OK
