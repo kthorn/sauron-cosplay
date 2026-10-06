@@ -55,7 +55,7 @@ class TestCad(unittest.TestCase):
         m = model.read_model()
         self.assertEqual(m["blade_bounds"], [18.5, 0, 65, 295.275])
         self.assertAlmostEqual(m["bore_diameter"], 27.17, places=3)
-        self.assertAlmostEqual(m["slot_width"], 10.5, places=3)
+        self.assertAlmostEqual(m["slot_width"], 10.3, places=3)
         self.assertEqual(m["stations"], [45, 225])
         self.assertEqual(m["land_bands"], [[34, 56], [214, 236]])
         self.assertEqual(m["pipe_span"], [15, 854])
@@ -66,7 +66,7 @@ class TestCad(unittest.TestCase):
     def test_measured_sizes(self):
         m = model.read_model({"pipe_od": 27, "foam_thickness": 12})
         self.assertAlmostEqual(m["bore_diameter"], 27.5, places=3)
-        self.assertAlmostEqual(m["slot_width"], 12.5, places=3)
+        self.assertAlmostEqual(m["slot_width"], 12.3, places=3)
         self.assertAlmostEqual(m["blade_bounds"][3], 295.275, places=3)
 
     def test_scaled_stations_fixed_lands(self):
@@ -99,11 +99,22 @@ class TestCad(unittest.TestCase):
         self.assertEqual(min(p[0] for p in points), 18.5)
         self.assertEqual(max(p[0] for p in points), 65)
         self.assertEqual(min(p[1] for p in points), 0)
-        self.assertEqual(max(p[1] for p in points), 295.275)
+        self.assertAlmostEqual(max(p[1] for p in points), 295.275, places=6)
         self.assertEqual(intersections(points), [])
         for y in [34.1, 45, 55.9, 214.1, 225, 235.9]:
             for x in [18.6, 25, 30.5]:
                 self.assertTrue(inside((x, y), points), (x, y))
+        # Blade D: round bite and barbed opening, open to the shaft, with at
+        # least 16 mm of foam beside them.
+        for low, high in [(176, 208), (62, 118)]:
+            self.assertFalse(inside((19, (low+high)/2), points), "opening reaches the root")
+            for tenth in range(low*10+5, high*10-4):
+                y = tenth/10
+                xs = sorted(a[0]+(y-a[1])*(b[0]-a[0])/(b[1]-a[1])
+                            for a, b in zip(points, points[1:]+points[:1]) if (a[1] > y) != (b[1] > y))
+                self.assertGreaterEqual(min(xs[i+1]-xs[i] for i in range(0, len(xs), 2)), 16, y)
+        with self.assertRaises(RuntimeError):  # shortened blades would move the root off the bands
+            model.read_model({"blade_length": 200})
         # Real 2D render catches invalid polygon output, not just echoed data.
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory) / "blade.svg"
@@ -202,18 +213,19 @@ class TestCad(unittest.TestCase):
             target = Path(directory) / "holder-lower.stl"
             for height in [16, 6]:  # thin mounting band cannot supply a width probe
                 cad = model.read_model({"adapter_height": height})
-                for thickness in [8.5, 12]:  # actual widths 9.0 and 12.5 vs required 10.5
+                for thickness in [8.5, 12]:  # actual widths 8.8 and 12.3 vs required 10.3
                     with self.subTest(height=height, thickness=thickness):
                         model.run_scad("holder_lower", target, {"adapter_height": height, "foam_thickness": thickness})
                         with self.assertRaisesRegex(ValueError, "slot|channel"):
                             model._holder_mesh(target, cad, "lower")
 
     def test_holder_unverifiable_width_rejected(self):
-        settings = {"adapter_od": 48.4, "foam_thickness": 20, "pin_d": 3, "pin_clearance": .2}
-        cad = model.read_model(settings)
+        # No wall beside a slot this wide at any probe level: must not pass silently.
+        cad = model.read_model()
+        cad["slot_width"] = 40
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory) / "holder-lower.stl"
-            model.run_scad("holder_lower", target, settings)
+            model.run_scad("holder_lower", target)
             with self.assertRaisesRegex(ValueError, "verify channel width"):
                 model._holder_mesh(target, cad, "lower")
 
@@ -222,20 +234,22 @@ class TestCad(unittest.TestCase):
             target = Path(directory) / "holder.stl"
             model.run_scad("holder", target)
             vertices, contains = model._mesh_geometry(target)
-            # Reference spindle: one 30 mm hexagonal swell (face 25.981 mm from
-            # axis; a dodecagon would be 30 mm) above a 19.5 mm waist.
+            # Reference spindle placed for blade D (heights from blade base; the
+            # holder starts at 37): 30 mm hexagonal swell over D's middle root
+            # (face 25.981 mm from axis; a dodecagon would be 30 mm), narrower
+            # beside the bite, 19.5 mm waist inside the lower opening.
             for i in range(6):
-                angle = math.radians(30+i*60)
-                for radius, z, expected in [(25.7, 168, True), (26.2, 168, False),
-                                            (16.6, 51, True), (17.2, 51, False)]:
-                    self.assertEqual(contains((radius*math.cos(angle), radius*math.sin(angle), z)), expected)
-                angle -= math.pi/6
-                # Grooves follow each blade's inner edge, only where it meets
-                # the core: lower land, upper swell, and solid in between.
-                for radius, z, expected in [(18.3, 8, True), (18.7, 8, False),
-                                            (22.0, 168, True), (23.0, 168, False),
-                                            (22.5, 95, True)]:
-                    self.assertEqual(contains((radius*math.cos(angle), radius*math.sin(angle), z)), expected, (radius, z))
+                flat, vertex = math.radians(30+i*60), math.radians(i*60)
+                for angle, radius, blade_z, expected in [
+                        (flat, 25.7, 150, True), (flat, 26.2, 150, False),
+                        (flat, 21.2, 205, True), (flat, 22.0, 205, False),
+                        # Grooves only where the blade root meets the core.
+                        (vertex, 18.3, 45, True), (vertex, 18.7, 45, False),  # base root
+                        (vertex, 18.3, 150, True), (vertex, 18.7, 150, False),  # middle root
+                        (vertex, 25.0, 192, True),  # solid core seen through the bite
+                        (vertex, 21.0, 90, False)]:  # waist inside the lower opening
+                    point = (radius*math.cos(angle), radius*math.sin(angle), blade_z-37)
+                    self.assertEqual(contains(point), expected, (i, radius, blade_z))
             # Full print starts 37 mm above blade base. The pointed tip ends
             # 12 mm short of the 295.275 mm EVA tips; no PVC cut changes.
             self.assertAlmostEqual(max(v[2] for v in vertices), 246.275, delta=.01)
@@ -292,6 +306,24 @@ class TestExports(unittest.TestCase):
         for page in result["pages"]:
             self.assertEqual(page["size_mm"], {"a4": [210, 297], "letter": [215.9, 279.4]}[page["format"]])
         self.assertEqual(len(result["pages"]), 4)
+
+    def test_bevel_guides(self):
+        """Every pattern sheet carries green bevel lines inside the blade, off the root edge."""
+        points = model.read_model()["blade_points"]
+        native = [(x, -y) for x, y in points]
+        ns = {"svg": model.NS}
+        sheets = sorted((self.root/"patterns").glob("blade*.svg"))
+        self.assertEqual(len(sheets), 5)
+        for sheet in sheets:
+            paths = ET.parse(sheet).getroot().findall(".//svg:g[@id='bevel']/svg:path", ns)
+            self.assertEqual(len(paths), 1, sheet.name)
+            self.assertEqual(paths[0].get("stroke"), model.BEVEL_COLOR)
+        segments = model._segments(paths[0].get("d"))
+        self.assertGreater(len(segments), 20)
+        for segment in segments:
+            for x, y in segment:
+                self.assertTrue(inside((x, y), native), (x, y))
+                self.assertGreater(x, 18.5+model.BEVEL_WIDTH-.01)
 
     def test_holder_exports_and_corruption(self):
         for part in ["lower", "upper"]:
@@ -450,7 +482,7 @@ class TestExports(unittest.TestCase):
         self.assertEqual(list(elsewhere.iterdir()), [])
         cad = json.loads((self.root / "patterns/manifest.json").read_text())["cad"]
         self.assertEqual(cad["bore_diameter"], 27.5)
-        self.assertEqual(cad["slot_width"], 12.5)
+        self.assertEqual(cad["slot_width"], 12.3)
 
     def test_unsafe_manifest_paths(self):
         victim = self.parent / "keep-me.txt"

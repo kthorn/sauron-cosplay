@@ -77,6 +77,7 @@ The following are our design decisions rather than claims from the references:
 
 - 35-inch / 889 mm overall target and permanent glued assembly.
 - Nominal ¾-inch PVC core; nominal 10 mm EVA as the initial blade material.
+- Blade design D ("spiked"): an adaptation of the drawing's blade side view (sturdy body, spear tip, round bite, barbed opening, hooked outer spike, crescent base horn), fitted to the existing ~3/4-scale 295.275 × 46.5 mm envelope and mounting bands. Feature sizes are project choices, not measured drawing dimensions.
 - A hexagonal spindle holder following the drawing's 380 mm core silhouette (base collar, waist, single swell, long taper), with blade grooves at its six vertices only where the blades meet it, and an integrated pointed printed crown (ball tip removed at the user's request), recessed 12 mm below the EVA blade tips. Total height approximately 246 mm, split perpendicular to the handle axis into two approximately 123 mm sections for an A1 mini. Proportions, clearances and the transverse split are project choices, not measured drawing dimensions. The existing blade shape, 180 mm mounting-station spacing and PVC layout are retained; no second 75% scaling is applied.
 - A small fit-test print and optional original two-ring alternative; adapter OD 60 mm, height 16 mm, slot roots at radius 18.5 mm.
 - Nominal head span 130 mm across opposed blade centerlines; the cutting outline has initial radial bounds 18.5–65 mm.

@@ -9,7 +9,7 @@ head_radius = 65;
 pipe_od = 26.67;
 bore_clearance = 0.5; // Total DIAMETER allowance
 foam_thickness = 10;
-slot_clearance = 0.5; // Total slot WIDTH allowance
+slot_clearance = 0.3; // Total slot WIDTH allowance
 adapter_od = 60;
 adapter_height = 16;
 slot_root_radius = 18.5;
@@ -49,17 +49,17 @@ holder_height = holder_end - holder_start;
 holder_bore_height = pipe_end - blade_base - holder_start + 1; // 1 mm axial PVC slack
 crown_stem_z = holder_bore_height + 2; // Protect the pipe wall before the outer cone narrows
 holder_split = (holder_start + holder_end)/2;
-// Reference spindle (drawing's 380 mm core): base collar, narrow waist, one
-// hexagonal swell, then a long taper to the pointed crown. Blades sit at the
-// six vertices. Axial positions are fractions of the 196 mm mounting envelope;
-// the final taper keeps 3 mm of wall around the PVC end before the tip.
+// Reference spindle (drawing's 380 mm core), placed for blade D: base collar on
+// the base root, 19.5 mm waist inside the lower opening, the 60 mm hexagonal swell
+// over the solid middle root (118-176 mm), then one taper through the round bite.
+// Blades sit at the six vertices; the final taper keeps 3 mm of wall around the
+// PVC end before the point.
 holder_profile = [
     [slot_root_radius+5.5, 0],
-    [adapter_radius-3, holder_body_height*8/196],
-    [adapter_radius-3, holder_body_height*16/196],
-    [slot_root_radius+1, holder_body_height*51/196],
-    [adapter_radius, holder_body_height*168/196],
-    [slot_root_radius+5, crown_stem_z-14],
+    [adapter_radius-3, z(45)-holder_start],
+    [adapter_radius-3, z(53)-holder_start],
+    [slot_root_radius+1, z(88)-holder_start],
+    [adapter_radius, z(150)-holder_start],
     [slot_root_radius+1, crown_stem_z],
     [0, holder_height]
 ];
@@ -72,25 +72,31 @@ pin_circle = (bore_diameter/2 + profile_r(holder_height/2)*cos(30))/2;
 function r(f) = slot_root_radius + (head_radius - slot_root_radius) * f;
 function z(y) = y * axial_scale;
 
-// Original simplified silhouette, inspired by the United Cutlery drawing.
-// Normalized radial fractions make head width independent of pipe/slot dimensions.
-// Mounting-band endpoints remain absolute offsets from scaled station centers.
-blade_points = [
-    [r(0), 0], [r(.397849), z(16)],
-    [r(.311828), land_bands[0][0]], [r(.634409), land_bands[0][0]],
-    [r(.870968), z(62)], [r(.612903), z(57)],
-    [r(1), z(95)], [r(.677419), z(118)], [r(.849462), z(185)],
-    [r(.612903), z(203)], [r(.741935), land_bands[1][0]],
-    [r(.569892), land_bands[1][1]], [r(.827957), z(250)],
-    [r(.419355), z(262)], [r(.376344), blade_length],
-    [r(.225806), z(279)], [r(.139785), z(255)],
-    [r(0), land_bands[1][1]], [r(0), land_bands[1][0]],
-    [r(.161290), z(197)], [r(.268817), z(163)],
-    [r(.182795), z(128)], [r(.096774), z(96)],
-    [r(0), land_bands[0][1]], [r(0), land_bands[0][0]], [r(.096774), z(18)]
-];
+// Blade D, "spiked", adapted from the United Cutlery PD4646 drawing: sturdy body,
+// spear tip, round bite and barbed opening open to the shaft, hooked outer spike
+// and a crescent base horn. Design coordinates are default-size millimeters
+// (x = 18.5 slot root .. 65 head radius, y = 0 .. 295.275 tip), mapped through
+// r()/z() so head_radius, blade_length and slot_root_radius stretch the outline.
+function design(points) = [for (p = points) [r((p[0] - 18.5) / 46.5), z(p[1])]];
+// Quadratic Bezier, n segments, endpoints included.
+function bez(p0, c, p1, n=8) = [for (i = [0:n]) let(t = i / n) (1-t)*(1-t)*p0 + 2*(1-t)*t*c + t*t*p1];
+// Circular arc from angle a0 to a1 (degrees), endpoints included.
+function arc(center, radius, a0, a1, n=12) = [for (i = [0:n]) let(a = a0 + (a1 - a0) * i / n) center + radius * [cos(a), sin(a)]];
+function head(v) = [for (i = [0:len(v)-2]) v[i]];
+function tail(v) = [for (i = [1:len(v)-1]) v[i]];
+blade_points = design(concat(
+    head(bez([18.5, 0], [40, 9], [58, 3])),
+    head(bez([58, 3], [50, 12], [47, 27])),
+    [[47, 27], [51.5, 99], [65, 101], [57, 116], [61.5, 125], [36, 295.275]],
+    tail(bez([36, 295.275], [31, 252], [18.5, 240])),
+    arc([18.5, 192], 16, 90, -90, 12),
+    bez([18.5, 118], [29, 117], [34, 106]),
+    [[29.5, 100], [35, 97]],
+    tail(bez([35, 97], [35, 76], [18.5, 62]))
+));
 // Inner edge, tip to base: its radial shadow is the only groove in the holder.
-blade_inner_edge = [for (i = [14:len(blade_points)-1]) blade_points[i], blade_points[0]];
+blade_tip = [for (i = [0:len(blade_points)-1]) if (blade_points[i][1] == max([for (p = blade_points) p[1]])) i][0];
+blade_inner_edge = [for (i = [blade_tip:len(blade_points)-1]) blade_points[i], blade_points[0]];
 parameters = [
     ["overall_length", overall_length], ["blade_length", blade_length],
     ["head_radius", head_radius], ["pipe_od", pipe_od],
@@ -119,9 +125,9 @@ assert(tip_end_radius >= 3 && tip_end_radius <= tip_od / 2, "rounded tip radius 
 assert(pommel_od > bore_diameter && pommel_extension > 0 && pommel_height > pommel_extension, "pommel sleeve");
 assert(blade_base > pommel_height, "blade/pommel separation");
 assert(coupon_height > 0 && coupon_height <= adapter_height, "coupon height");
-assert(land_bands[0][0] > z(18) && land_bands[0][1] < z(57), "lower land stock");
-assert(land_bands[1][0] > z(203) && land_bands[1][1] < z(250), "upper land stock");
-assert(r(.311828) > adapter_radius && r(.569892) > adapter_radius, "radial land stock");
+assert(land_bands[0][1] < z(62), "lower root must cover lower band");
+assert(land_bands[1][0] > z(208) && land_bands[1][1] < z(240), "upper root must cover upper band");
+assert(r((44.5-18.5)/46.5) > adapter_radius, "radial land stock");
 assert(top_cap_start > land_bands[1][1], "cap/upper land separation");
 assert(min([for (p = holder_profile) if (p[1] <= crown_stem_z) p[0]])*cos(30) - bore_diameter/2 >= 3, "minimum hexagonal holder wall 3 mm");
 assert(crown_recess > 0 && holder_body_height < crown_stem_z && crown_stem_z < holder_height, "crown/pipe/blade-tip clearance");

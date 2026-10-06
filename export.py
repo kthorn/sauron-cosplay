@@ -15,6 +15,8 @@ import xml.etree.ElementTree as ET
 import cairosvg
 
 SOURCE = Path(__file__).resolve().with_name("mace.scad")
+BEVEL_WIDTH = 6  # mm in from each exposed edge; suits 10 mm foam (about 4 mm removed per face)
+BEVEL_COLOR = "#008800"  # not black/blue/red, so outline verification ignores it
 
 
 def run_scad(mode: str, destination: Path, defines: dict[str, float] | None = None) -> None:
@@ -299,7 +301,39 @@ def _references(parent, cad):
     _text(parent, right+2, cad["stations"][0]*axes[1]+5, "Dashed boxes: seating bands; DO NOT CUT")
 
 
-def _pattern(filename, native_path, view, cad, page=None, all_pages=()):
+def _bevel_lines(defines: dict[str, float] | None, width: float) -> list:
+    """Outline inset by `width`, as polylines in native SVG coordinates, minus the root edge.
+
+    The root (mounting) edge sits in the slots and stays square, so inset segments
+    running parallel to it are dropped; everything else exposed gets a bevel guide.
+    """
+    global SOURCE
+    source = SOURCE
+    with tempfile.TemporaryDirectory(prefix="mace-bevel-") as directory:
+        inset = Path(directory) / "bevel.scad"
+        inset.write_text(f"include <{source}>\noffset(delta=-{width}) polygon(blade_points);\n")
+        target = Path(directory) / "bevel.svg"
+        try:
+            SOURCE = inset  # metadata mode draws nothing itself; only the inset renders
+            run_scad("metadata", target, defines)
+        finally:
+            SOURCE = source
+        paths = [path.get("d", "") for path in ET.parse(target).getroot().iter(f"{{{NS}}}path")]
+    limit = read_model(defines)["parameters"]["slot_root_radius"] + width + .05
+    lines = []
+    for segment in (s for d in paths for s in _segments(d)):
+        if max(segment[0][0], segment[1][0]) < limit:
+            continue
+        if lines and lines[-1][-1] == segment[0]:
+            lines[-1].append(segment[1])
+        else:
+            lines.append(list(segment))
+    if not lines:
+        raise ValueError("Bevel inset is empty")
+    return lines
+
+
+def _pattern(filename, native_path, view, cad, page=None, all_pages=(), bevel=()):
     if page:
         width, height = page["size_mm"]
         origin = page["origin"]
@@ -334,6 +368,10 @@ def _pattern(filename, native_path, view, cad, page=None, all_pages=()):
     path = copy.deepcopy(native_path)
     path.attrib.update({"fill": "none", "stroke": "#000000", "stroke-width": ".35", "stroke-linejoin": "round"})
     cut.append(path)
+    if bevel:
+        d = " ".join("M " + " L ".join(f"{x:.4f} {y:.4f}" for x, y in line) for line in bevel)
+        _element(_element(pattern, "g", id="bevel"), "path", d=d, fill="none", stroke=BEVEL_COLOR,
+                 stroke_width=.3, stroke_dasharray="4 1 1 1")
     x, y = canvas[0]+MARGIN, canvas[1]+13
     title = f"Sauron blade | {page['format'].upper()} {page['number']}/{page['count']} | Actual Size / 100%" if page else "Sauron blade | FULL SIZE | Cut 6 in EVA"
     _text(root, x, y, title)
@@ -341,6 +379,8 @@ def _pattern(filename, native_path, view, cad, page=None, all_pages=()):
     bx, by = canvas[0]+20, canvas[1]+height-18
     _element(root, "path", id="calibration", d=f"M {bx} {by} L {bx+100} {by} M {bx} {by-2} L {bx} {by+2} M {bx+100} {by-2} L {bx+100} {by+2}", fill="none", stroke="#cc0000", stroke_width=.4)
     _text(root, bx, by+7, "100 mm: check with ruler. NO Fit / Shrink to page.")
+    if bevel:
+        _text(root, canvas[0]+20, canvas[1]+height-6, "GREEN DASH-DOT: bevel guide, NOT a cut (carve both faces).")
     ET.ElementTree(root).write(filename, encoding="utf-8", xml_declaration=True)
     return {"size_mm": [width, height], "origin": canvas[:2]}
 
@@ -496,6 +536,14 @@ def _holder_mesh(filename, cad, part):
     widest = max(p[0] for p in cad["holder_profile"])
     levels = {s-cad["holder_span"][0] for s in cad["stations"]}
     levels.update(z for r, z in cad["holder_profile"] if r == widest)
+    # Also each section's deepest groove, so a slim station cannot leave a piece unprobed.
+    def profile_radius(z):
+        return next(ra+(rb-ra)*(z-za)/(zb-za)
+                    for (ra, za), (rb, zb) in zip(cad["holder_profile"], cad["holder_profile"][1:]) if za <= z <= zb)
+    samples = [offset+.5+i for i in range(int(length-1))]
+    deepest = max(samples, key=lambda z: profile_radius(z)-_groove_floor(cad, z))
+    if profile_radius(deepest) > _groove_floor(cad, deepest):
+        levels.add(deepest)
     width_probes = 0
     for z in sorted(levels):
         if not offset < z < offset+length:
@@ -607,7 +655,7 @@ def validate_exports(output_dir: Path) -> None:
         _holder_mesh(root/"prints"/filename, cad, part)
 
 
-def build(output_dir: Path, defines: dict[str, float] | None = None) -> dict:
+def build(output_dir: Path, defines: dict[str, float] | None = None, bevel_width: float = BEVEL_WIDTH) -> dict:
     root = Path(output_dir).resolve()
     root.mkdir(parents=True, exist_ok=True)
     old_manifest = _owned_path(root, "patterns/manifest.json")
@@ -627,9 +675,10 @@ def build(output_dir: Path, defines: dict[str, float] | None = None) -> dict:
         if len(paths) != 1:
             raise ValueError("Expected one native blade polygon")
         pages = _pages(view)
-        full = _pattern(stage/"patterns/blade.svg", paths[0], view, cad)
+        bevel = _bevel_lines(defines, bevel_width)
+        full = _pattern(stage/"patterns/blade.svg", paths[0], view, cad, bevel=bevel)
         for page in pages:
-            _pattern(stage/page["svg"], paths[0], view, cad, page, pages)
+            _pattern(stage/page["svg"], paths[0], view, cad, page, pages, bevel)
             cairosvg.svg2pdf(url=str(stage/page["svg"]), write_to=str(stage/page["pdf"]))
         run_scad("adapter", stage/"prints/adapter.stl", defines)
         run_scad("fit_coupon", stage/"prints/fit-coupon.stl", defines)
@@ -640,7 +689,7 @@ def build(output_dir: Path, defines: dict[str, float] | None = None) -> dict:
         owned = ["patterns/blade.svg", "prints/adapter.stl", "prints/fit-coupon.stl",
                  "prints/holder.stl", "prints/holder-lower.stl", "prints/holder-upper.stl"] + [page[k] for page in pages for k in ["svg", "pdf"]] + ["patterns/manifest.json"]
         manifest = {"cad": cad, "native_viewbox": view, "full_svg": full, "pages": pages, "owned": owned, "source_fingerprint": _fingerprint(),
-                    "margin_mm": MARGIN, "overlap_mm": OVERLAP, "outline_tolerance_mm": TOLERANCE}
+                    "bevel_mm": bevel_width, "margin_mm": MARGIN, "overlap_mm": OVERLAP, "outline_tolerance_mm": TOLERANCE}
         (stage/"patterns/manifest.json").write_text(json.dumps(manifest, indent=2)+"\n")
         validate_exports(stage)
         for name in owned:
@@ -665,6 +714,7 @@ def main():
     parser.add_argument("--out", type=Path, default=SOURCE.parent)
     parser.add_argument("--set", action="append", default=[], metavar="NAME=NUMBER")
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--bevel", type=float, default=BEVEL_WIDTH, metavar="MM", help="bevel guide inset (default %(default)s)")
     args = parser.parse_args()
     try:
         defines = {}
@@ -677,7 +727,7 @@ def main():
             validate_exports(args.out)
             print(f"Verified actual SVG/PDF outlines and all STL meshes: {args.out.resolve()}")
         else:
-            manifest = build(args.out, defines)
+            manifest = build(args.out, defines, args.bevel)
             print(f"Verified exports: {args.out.resolve()} ({len(manifest['pages'])} PDF pages, holder sections, adapter and coupon)")
     except (ValueError, RuntimeError, OSError, ET.ParseError, KeyError) as error:
         parser.exit(1, f"Export/verification failed: {error}\n")
