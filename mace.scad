@@ -3,8 +3,9 @@
 // Crown is printed to a point, recessed inside separate EVA blades.
 // Pommel is FOAM. Legacy rings + foam top cap remain a lighter alternative.
 mode = "assembly"; // [assembly,ring_assembly,blade_2d,metadata,adapter,fit_coupon,holder,holder_lower,holder_upper]
-overall_length = 889;
-blade_length = 295.275;
+overall_length = 991; // To the spear tips
+blade_length = 295.275; // Mounted length the holder is sized from (base to former tip)
+spear_extension = 102; // Free spear above that, so about a third of each blade rises over the crown
 head_radius = 65;
 pipe_od = 26.67;
 bore_clearance = 0.5; // Total DIAMETER allowance
@@ -20,7 +21,7 @@ tip_od = 36;
 tip_overlap = 15;
 tip_extension = 35;
 tip_end_radius = 4; // Legacy foam top-cap tip radius
-crown_recess = 12; // Printed crown ends this far below EVA blade tips
+crown_recess = 12; // Printed crown ends this far below the mounted blade_length
 pin_d = 4; // Printed joint alignment pins on the lower section
 pin_length = 6;
 pin_clearance = 0.4; // Total hole DIAMETER allowance
@@ -36,9 +37,11 @@ land_half = adapter_height / 2 + land_allowance;
 axial_scale = blade_length / 295.275;
 stations = [45 * axial_scale, 225 * axial_scale];
 land_bands = [for (s = stations) [s - land_half, s + land_half]];
-blade_base = overall_length - blade_length;
+blade_top = blade_length + spear_extension;
+head_top = overall_length - spear_extension;
+blade_base = head_top - blade_length;
 pipe_start = pommel_extension;
-pipe_end = overall_length - tip_extension;
+pipe_end = head_top - tip_extension;
 top_cap_start = blade_length - tip_extension - tip_overlap;
 cover_radius = pipe_od / 2 + cover_allowance;
 holder_start = stations[0] - adapter_height/2;
@@ -70,13 +73,18 @@ function profile_r(z, i=0) = z <= holder_profile[i+1][1]
 // directions so they stay clear of the vertex grooves.
 pin_circle = (bore_diameter/2 + profile_r(holder_height/2)*cos(30))/2;
 function r(f) = slot_root_radius + (head_radius - slot_root_radius) * f;
-function z(y) = y * axial_scale;
+// Design y above 295.275 is the free spear: it stretches with spear_extension, not blade_length.
+function z(y) = y <= 295.275 ? y * axial_scale : blade_length + (y - 295.275) * spear_extension / 130;
 
 // Blade D, "spiked", adapted from the United Cutlery PD4646 drawing: sturdy body,
-// spear tip, round bite and barbed opening open to the shaft, hooked outer spike
-// and a crescent base horn. Design coordinates are default-size millimeters
-// (x = 18.5 slot root .. 65 head radius, y = 0 .. 295.275 tip), mapped through
-// r()/z() so head_radius, blade_length and slot_root_radius stretch the outline.
+// long spear tip rising about a third of the blade over the printed crown, round
+// bite and barbed opening open to the shaft, hooked outer spike and a crescent
+// base horn. Design coordinates are default-size millimeters (x = 18.5 slot root
+// .. 65 head radius, y = 55 base .. 425.275 tip; y = 0 is the original blade base
+// that blade_base, the stations and the holder are measured from), mapped through r()/z() so head_radius,
+// blade_length, spear_extension and slot_root_radius stretch the outline. Below
+// 240 the root contacts match the printed holder's grooves; above, the inner edge
+// stands clear of the crown.
 function design(points) = [for (p = points) [r((p[0] - 18.5) / 46.5), z(p[1])]];
 // Quadratic Bezier, n segments, endpoints included.
 function bez(p0, c, p1, n=8) = [for (i = [0:n]) let(t = i / n) (1-t)*(1-t)*p0 + 2*(1-t)*t*c + t*t*p1];
@@ -85,10 +93,15 @@ function arc(center, radius, a0, a1, n=12) = [for (i = [0:n]) let(a = a0 + (a1 -
 function head(v) = [for (i = [0:len(v)-2]) v[i]];
 function tail(v) = [for (i = [1:len(v)-1]) v[i]];
 blade_points = design(concat(
-    head(bez([18.5, 0], [40, 9], [58, 3])),
-    head(bez([58, 3], [50, 12], [47, 27])),
-    [[47, 27], [51.5, 99], [65, 101], [57, 116], [61.5, 125], [36, 295.275]],
-    tail(bez([36, 295.275], [31, 252], [18.5, 240])),
+    // Base sits on top of the printed holder's flared collar, so about 18 mm of
+    // core shows below the blades as in the drawing.
+    head(bez([18.5, 55], [40, 63], [58, 57])),
+    head(bez([58, 57], [52, 64], [50, 76])),
+    [[50, 76], [51.5, 99], [65, 101], [57, 116], [61.5, 125], [32, 425.275]],
+    tail(bez([32, 425.275], [23.5, 330], [23.5, 262])),
+    // Leave the root through the original blade's groove-end vertex.
+    tail(bez([23.5, 262], [23, 250], bez([36, 295.275], [31, 252], [18.5, 240])[7])),
+    [[18.5, 240]],
     arc([18.5, 192], 16, 90, -90, 12),
     bez([18.5, 118], [29, 117], [34, 106]),
     [[29.5, 100], [35, 97]],
@@ -98,7 +111,7 @@ blade_points = design(concat(
 blade_tip = [for (i = [0:len(blade_points)-1]) if (blade_points[i][1] == max([for (p = blade_points) p[1]])) i][0];
 blade_inner_edge = [for (i = [blade_tip:len(blade_points)-1]) blade_points[i], blade_points[0]];
 parameters = [
-    ["overall_length", overall_length], ["blade_length", blade_length],
+    ["overall_length", overall_length], ["blade_length", blade_length], ["spear_extension", spear_extension],
     ["head_radius", head_radius], ["pipe_od", pipe_od],
     ["bore_clearance", bore_clearance], ["foam_thickness", foam_thickness],
     ["slot_clearance", slot_clearance], ["adapter_od", adapter_od],
@@ -111,7 +124,8 @@ parameters = [
     ["pommel_height", pommel_height], ["pommel_extension", pommel_extension]
 ];
 
-assert(overall_length > blade_length && blade_length > 0, "overall/blade length");
+assert(overall_length > blade_top && blade_length > 0, "overall/blade length");
+assert(spear_extension >= crown_recess + 50, "spear must rise clear of the crown");
 assert(pipe_od > 0 && foam_thickness > 0 && adapter_height > 0, "positive sizes");
 assert(bore_clearance >= 0 && slot_clearance >= 0, "negative clearance");
 assert(cover_allowance >= 0 && land_allowance >= 3, "cover/land allowance");
@@ -125,7 +139,7 @@ assert(tip_end_radius >= 3 && tip_end_radius <= tip_od / 2, "rounded tip radius 
 assert(pommel_od > bore_diameter && pommel_extension > 0 && pommel_height > pommel_extension, "pommel sleeve");
 assert(blade_base > pommel_height, "blade/pommel separation");
 assert(coupon_height > 0 && coupon_height <= adapter_height, "coupon height");
-assert(land_bands[0][1] < z(62), "lower root must cover lower band");
+assert(z(55) - holder_start >= 10, "printed core must show below the blade base");
 assert(land_bands[1][0] > z(208) && land_bands[1][1] < z(240), "upper root must cover upper band");
 assert(r((44.5-18.5)/46.5) > adapter_radius, "radial land stock");
 assert(top_cap_start > land_bands[1][1], "cap/upper land separation");
@@ -154,13 +168,14 @@ module core_cutouts(height) {
             cube([adapter_radius-slot_root_radius+1, slot_width, height+2]);
 }
 // Grooves exist only where a blade meets the core: each is the radial shadow of
-// the blade's inner edge, so blades still insert radially and seat on the lands.
+// the blade's inner edge, so blades still insert radially. Grooves stop at the
+// blade base, leaving the collar below solid as a ledge the blades sit on.
 module blade_grooves() {
     for (i = [0:5]) rotate([0, 0, i*60]) translate([0, 0, -holder_start])
         rotate([90, 0, 0]) linear_extrude(slot_width, center=true)
-            polygon(concat([[head_radius+1, -1], [head_radius+1, blade_length+1],
-                            [blade_inner_edge[0][0], blade_length+1]],
-                           blade_inner_edge, [[slot_root_radius, -1]]));
+            polygon(concat([[head_radius+1, blade_points[0][1]], [head_radius+1, blade_top+1],
+                            [blade_inner_edge[0][0], blade_top+1]],
+                           blade_inner_edge));
 }
 module adapter(height=adapter_height) {
     difference() {
@@ -241,7 +256,7 @@ module assembly(legacy_rings=false) {
 module metadata() {
     echo(["MACE_META",
         ["parameters", parameters], ["blade_points", blade_points],
-        ["blade_bounds", [slot_root_radius, 0, head_radius, blade_length]],
+        ["blade_bounds", [slot_root_radius, z(55), head_radius, blade_top]],
         ["bore_diameter", bore_diameter], ["slot_width", slot_width],
         ["stations", stations], ["land_bands", land_bands],
         ["pipe_span", [pipe_start, pipe_end]], ["blade_base", blade_base],

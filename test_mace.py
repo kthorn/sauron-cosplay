@@ -53,7 +53,7 @@ class TestCad(unittest.TestCase):
 
     def test_defaults(self):
         m = model.read_model()
-        self.assertEqual(m["blade_bounds"], [18.5, 0, 65, 295.275])
+        self.assertEqual(m["blade_bounds"], [18.5, 55, 65, 397.275])
         self.assertAlmostEqual(m["bore_diameter"], 27.17, places=3)
         self.assertAlmostEqual(m["slot_width"], 10.3, places=3)
         self.assertEqual(m["stations"], [45, 225])
@@ -67,7 +67,7 @@ class TestCad(unittest.TestCase):
         m = model.read_model({"pipe_od": 27, "foam_thickness": 12})
         self.assertAlmostEqual(m["bore_diameter"], 27.5, places=3)
         self.assertAlmostEqual(m["slot_width"], 12.3, places=3)
-        self.assertAlmostEqual(m["blade_bounds"][3], 295.275, places=3)
+        self.assertAlmostEqual(m["blade_bounds"][3], 397.275, places=3)
 
     def test_scaled_stations_fixed_lands(self):
         m = model.read_model({"blade_length": 320})
@@ -98,12 +98,14 @@ class TestCad(unittest.TestCase):
         self.assertGreater(len(points), 8)
         self.assertEqual(min(p[0] for p in points), 18.5)
         self.assertEqual(max(p[0] for p in points), 65)
-        self.assertEqual(min(p[1] for p in points), 0)
-        self.assertAlmostEqual(max(p[1] for p in points), 295.275, places=6)
+        self.assertEqual(min(p[1] for p in points), 55)
+        self.assertAlmostEqual(max(p[1] for p in points), 397.275, places=6)
         self.assertEqual(intersections(points), [])
-        for y in [34.1, 45, 55.9, 214.1, 225, 235.9]:
+        for y in [214.1, 225, 235.9]:
             for x in [18.6, 25, 30.5]:
                 self.assertTrue(inside((x, y), points), (x, y))
+        for y in [55.5, 61.5]:  # base root seats in the printed collar groove
+            self.assertTrue(inside((18.6, y), points), y)
         # Blade D: round bite and barbed opening, open to the shaft, with at
         # least 16 mm of foam beside them.
         for low, high in [(176, 208), (62, 118)]:
@@ -149,9 +151,14 @@ class TestCad(unittest.TestCase):
         # Catches double-scaling, a longitudinal split, missing tapers or bore,
         # and export of assembly coordinates instead of bed coordinates.
         cad = model.read_model()
-        self.assertEqual(cad["blade_bounds"], [18.5, 0, 65, 295.275])
+        self.assertEqual(cad["blade_bounds"], [18.5, 55, 65, 397.275])
         self.assertEqual(cad["stations"], [45, 225])
         self.assertEqual(cad["holder_span"], [37, 283.275])
+        # As on the real mace: about a third of each blade rises over the crown,
+        # and the core's collar shows below the blade bases.
+        low, top = cad["blade_bounds"][1], cad["blade_bounds"][3]
+        self.assertAlmostEqual((top-cad["holder_span"][1])/(top-low), 1/3, delta=.05)
+        self.assertAlmostEqual(low-cad["holder_span"][0], 18, delta=.01)
         self.assertAlmostEqual(cad["holder_split"], 160.1375, delta=.001)
         with tempfile.TemporaryDirectory() as directory:
             for part in ["lower", "upper"]:
@@ -244,14 +251,16 @@ class TestCad(unittest.TestCase):
                         (flat, 25.7, 150, True), (flat, 26.2, 150, False),
                         (flat, 21.2, 205, True), (flat, 22.0, 205, False),
                         # Grooves only where the blade root meets the core.
-                        (vertex, 18.3, 45, True), (vertex, 18.7, 45, False),  # base root
+                        (vertex, 25.0, 45, True),  # solid collar below the blade base
+                        (vertex, 18.3, 58, True), (vertex, 18.7, 58, False),  # base root
                         (vertex, 18.3, 150, True), (vertex, 18.7, 150, False),  # middle root
                         (vertex, 25.0, 192, True),  # solid core seen through the bite
                         (vertex, 21.0, 90, False)]:  # waist inside the lower opening
                     point = (radius*math.cos(angle), radius*math.sin(angle), blade_z-37)
                     self.assertEqual(contains(point), expected, (i, radius, blade_z))
-            # Full print starts 37 mm above blade base. The pointed tip ends
-            # 12 mm short of the 295.275 mm EVA tips; no PVC cut changes.
+            # Full print starts 37 mm above the reference zero, 18 mm below the
+            # blade base. The pointed tip ends 12 mm short of the original
+            # 295.275 mm blade length, a third of the blade below the spear tips.
             self.assertAlmostEqual(max(v[2] for v in vertices), 246.275, delta=.01)
             self.assertTrue(contains((0, 0, 245.9)))
             self.assertFalse(contains((0, 0, 246.5)))
@@ -299,7 +308,7 @@ class TestExports(unittest.TestCase):
     def test_default_exports(self):
         result = model.build(self.root)
         model.validate_exports(self.root)
-        self.assertEqual(result["cad"]["blade_bounds"], [18.5, 0, 65, 295.275])
+        self.assertEqual(result["cad"]["blade_bounds"], [18.5, 55, 65, 397.275])
         for filename in ["patterns/blade.svg", "prints/adapter.stl", "prints/fit-coupon.stl"]:
             self.assertTrue((self.root / filename).is_file())
         self.assertEqual({p["format"] for p in result["pages"]}, {"a4", "letter"})
@@ -432,7 +441,8 @@ class TestExports(unittest.TestCase):
                 y_on_page = numbers[1] - page["origin"][1] + 25
                 if 25 <= y_on_page <= page["size_mm"][1] - 30:
                     seen.add((page["format"], station))
-        self.assertEqual(seen, {("a4", 45), ("a4", 225), ("letter", 45), ("letter", 225)})
+        # The raised blade base no longer covers the lower ring's band.
+        self.assertEqual(seen, {("a4", 225), ("letter", 225)})
         model.validate_exports(self.root)  # real SVG AND PDF reference placement
 
     def test_wide_head_labels_fit(self):

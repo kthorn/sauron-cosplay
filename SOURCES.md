@@ -1,6 +1,6 @@
 # Sauron cosplay mace — sources
 
-Research recorded: 2026-10-03. This is a lightweight carrying/photo prop for a 4′8″ nine-year-old, not a striking toy. The intended build is approximately 35 inches overall, with a nominal ¾-inch PVC core, six EVA-foam blades, and a split tapered printed blade holder (the original two-ring adapters remain an alternative).
+Research recorded: 2026-10-03. This is a lightweight carrying/photo prop for a 4′8″ nine-year-old, not a striking toy. The intended build is approximately 39 inches overall (lengthened from 35 to give the blades a free spear), with a nominal ¾-inch PVC core, six EVA-foam blades, and a split tapered printed blade holder (the original two-ring adapters remain an alternative).
 
 ## Dimensional and visual references
 
@@ -10,7 +10,7 @@ Research recorded: 2026-10-03. This is a lightweight carrying/photo prop for a 4
 - Evidence: manufacturer's product description, fetched directly.
 - Published dimensions: **46⅜ inches overall; 15½-inch blades**.
 - At 75%: **883.44 mm / 34.781 inches overall; 295.275 mm / 11.625-inch blades**.
-- Use: principal length reference. The proposed build rounds the overall length to **889 mm / 35 inches**, but retains approximately **295.3 mm** blades.
+- Use: principal length reference. The proposed build first rounded the overall length to **889 mm / 35 inches** with approximately **295.3 mm** blades; after the first holder print, the blades were lengthened to **342.3 mm** (991 mm / 39 inches overall) so about a third of each blade rises above the printed core, as in photos of the mace.
 - Limitation: this describes a steel-reinforced polyresin display replica, not a child-safe foam construction. Its materials are not our build recipe.
 
 ### United Cutlery drawing published by TheOneRing.net
@@ -75,10 +75,10 @@ Research recorded: 2026-10-03. This is a lightweight carrying/photo prop for a 4
 
 The following are our design decisions rather than claims from the references:
 
-- 35-inch / 889 mm overall target and permanent glued assembly.
+- 39-inch / 991 mm overall target (originally 35-inch / 889 mm, before the spear was lengthened) and permanent glued assembly.
 - Nominal ¾-inch PVC core; nominal 10 mm EVA as the initial blade material.
-- Blade design D ("spiked"): an adaptation of the drawing's blade side view (sturdy body, spear tip, round bite, barbed opening, hooked outer spike, crescent base horn), fitted to the existing ~3/4-scale 295.275 × 46.5 mm envelope and mounting bands. Feature sizes are project choices, not measured drawing dimensions.
-- A hexagonal spindle holder following the drawing's 380 mm core silhouette (base collar, waist, single swell, long taper), with blade grooves at its six vertices only where the blades meet it, and an integrated pointed printed crown (ball tip removed at the user's request), recessed 12 mm below the EVA blade tips. Total height approximately 246 mm, split perpendicular to the handle axis into two approximately 123 mm sections for an A1 mini. Proportions, clearances and the transverse split are project choices, not measured drawing dimensions. The existing blade shape, 180 mm mounting-station spacing and PVC layout are retained; no second 75% scaling is applied.
+- Blade design D ("spiked"): an adaptation of the drawing's blade side view (sturdy body, spear tip, round bite, barbed opening, hooked outer spike, crescent base horn), fitted to the printed holder: base on the collar (342.275 × 46.5 mm envelope), root contacts matching the printed grooves, and a free spear rising about a third of the blade over the crown. Feature sizes are project choices, not measured drawing dimensions.
+- A hexagonal spindle holder following the drawing's 380 mm core silhouette (base collar, waist, single swell, long taper), with blade grooves at its six vertices only where the blades meet it, and an integrated pointed printed crown (ball tip removed at the user's request), recessed 12 mm below the original 295 mm blade length (about 114 mm below the lengthened spear tips). Total height approximately 246 mm, split perpendicular to the handle axis into two approximately 123 mm sections for an A1 mini. Proportions, clearances and the transverse split are project choices, not measured drawing dimensions. The 180 mm mounting-station spacing and PVC layout are retained; no second 75% scaling is applied.
 - A small fit-test print and optional original two-ring alternative; adapter OD 60 mm, height 16 mm, slot roots at radius 18.5 mm.
 - Nominal head span 130 mm across opposed blade centerlines; the cutting outline has initial radial bounds 18.5–65 mm.
 - Independently adjustable pipe clearance, foam-slot clearance, blade length, and head width.

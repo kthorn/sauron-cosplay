@@ -288,17 +288,23 @@ def _text(parent, x, y, text):
     element.text = text
 
 
+def _seated_bands(cad):
+    """Ring stations whose seating band lies on the blade root (the raised base clears the lower one)."""
+    return [(s, b) for s, b in zip(cad["stations"], cad["land_bands"]) if b[0] >= cad["blade_bounds"][1]]
+
+
 def _references(parent, cad):
     p, axes = cad["parameters"], cad["svg_axes"]
     left, right = p["slot_root_radius"]*axes[0], (p["head_radius"]+2)*axes[0]
-    for station, band in zip(cad["stations"], cad["land_bands"]):
+    bands = _seated_bands(cad)
+    for station, band in bands:
         y = station*axes[1]
         line = _element(parent, "path", d=f"M {left} {y} L {right} {y}", fill="none", stroke="#0066cc", stroke_width=.25, stroke_dasharray="2 2")
         line.set("data-station", str(station))
         _text(parent, right+2, y-1, f"Adapter center: {station:g} mm")
         a, b, edge = band[0]*axes[1], band[1]*axes[1], cad["adapter_radius"]*axes[0]
         _element(parent, "path", d=f"M {left} {a} L {edge} {a} L {edge} {b} L {left} {b} Z", fill="none", stroke="#0066cc", stroke_width=.25, stroke_dasharray="2 2")
-    _text(parent, right+2, cad["stations"][0]*axes[1]+5, "Dashed boxes: seating bands; DO NOT CUT")
+    _text(parent, right+2, bands[0][0]*axes[1]+5, "Dashed boxes: seating bands; DO NOT CUT")
 
 
 def _bevel_lines(defines: dict[str, float] | None, width: float) -> list:
@@ -483,10 +489,10 @@ def _mesh(filename, cad, height):
 
 
 def _groove_floor(cad, z):
-    """Blade inner-edge radius at holder-local z: the floor of its groove."""
+    """Blade inner-edge radius at holder-local z: the floor of its groove (none below the blade base)."""
     z += cad["holder_span"][0]
     edge = cad["blade_inner_edge"]
-    return next(ra+(rb-ra)*(z-za)/(zb-za) for (ra, za), (rb, zb) in zip(edge, edge[1:]) if zb <= z <= za)
+    return next((ra+(rb-ra)*(z-za)/(zb-za) for (ra, za), (rb, zb) in zip(edge, edge[1:]) if zb <= z <= za), math.inf)
 
 
 def _holder_mesh(filename, cad, part):
@@ -613,7 +619,7 @@ def validate_exports(output_dir: Path) -> None:
             raise ValueError(f"{label} 100 mm calibration bar mismatch")
         references = []
         left = cad["parameters"]["slot_root_radius"]*cad["svg_axes"][0]
-        for station, band in zip(cad["stations"], cad["land_bands"]):
+        for station, band in _seated_bands(cad):
             y = station*cad["svg_axes"][1]
             right = (cad["parameters"]["head_radius"]+2)*cad["svg_axes"][0]
             references.append(((left, y), (right, y)))
