@@ -1,4 +1,4 @@
-// Variant D, "spiked": C (B's sturdy body with A's tip and inner barb) plus the
+// Variant D, "spiked": a sturdy body with a spear tip and inner barb, plus the
 // drawing's external spikes: a hooked spike at the widest point with a deeper notch
 // behind it, and a crescent base horn pointing outward and back. Same rings, stations, caps.
 include <../mace.scad>

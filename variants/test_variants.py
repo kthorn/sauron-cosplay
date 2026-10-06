@@ -13,9 +13,7 @@ from test_mace import inside, intersections  # noqa: E402
 ORIGINAL = export_variants.export.SOURCE, export_variants.export._fingerprint
 
 # Openings' axial spans (default mm) and the minimum horizontal foam width beside them.
-OPENINGS = {"a-drawing": ([(171, 209), (58, 122)], 14.5), "b-sturdy": ([(176, 208), (62, 118)], 18.5),
-            "c-hybrid": ([(176, 208), (62, 118)], 17),
-            "d-spiked": ([(176, 208), (62, 118)], 16)}
+OPENINGS = {"d-spiked": ([(176, 208), (62, 118)], 16)}
 
 
 def widths(points, y):
@@ -113,7 +111,7 @@ class TestVariants(unittest.TestCase):
                 self.assertIn("empty", result.stderr.lower(), result.stderr)
 
     def test_scaled_overrides_keep_root_on_bands(self):
-        export_variants.use("a-drawing")
+        export_variants.use("d-spiked")
         with self.assertRaises(RuntimeError):
             export_variants.export.read_model({"blade_length": 200})
         model = export_variants.export.read_model({"pipe_od": 27, "foam_thickness": 12, "head_radius": 69})

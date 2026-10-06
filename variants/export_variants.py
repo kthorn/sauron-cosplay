@@ -16,8 +16,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 import export  # noqa: E402
 
-VARIANTS = {"a-drawing": "blade_a_drawing.scad", "b-sturdy": "blade_b_sturdy.scad",
-            "c-hybrid": "blade_c_hybrid.scad", "d-spiked": "blade_d_spiked.scad"}
+VARIANTS = {"d-spiked": "blade_d_spiked.scad"}
 BEVEL_WIDTH = 6  # mm in from each exposed edge; suits 10 mm foam (about 4 mm removed per face)
 BEVEL_COLOR = "#008800"  # not black/blue/red, so export.py's outline verification ignores it
 INCLUDED = [HERE.parent / "mace.scad", HERE / "blade_shapes.scad"]

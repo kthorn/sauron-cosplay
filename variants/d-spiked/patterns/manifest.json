@@ -634,7 +634,7 @@
     "patterns/manifest.json"
   ],
   "source_fingerprint": {
-    "blade_d_spiked.scad": "428eac44fb9dece1eee7357e6a1d987d80a0f8ecce11b7509d51cc1b588bbb36",
+    "blade_d_spiked.scad": "c94a083b5117ee265fe208a5818871a1458f73713d9d2e7187cf4d7398cc3c38",
     "mace.scad": "c76d9ef74f5cdf5f7ec0004a2dd410cf3a7f1f2a3ae6be8e3fe40d995b8321fd",
     "blade_shapes.scad": "a98151fb76e82f9e1f591940763b925e25961cbdfc96bb85bc9e03215bf44501",
     "export.py": "826b3ddf823fe35c65785be4db4ba747cde5859da9c2de2d2c31b85ba128b4af"
