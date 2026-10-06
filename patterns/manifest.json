@@ -585,10 +585,6 @@
       [
         18.5,
         55
-      ],
-      [
-        18.5,
-        0
       ]
     ],
     "holder_bore_height": 224.275,
@@ -711,8 +707,8 @@
     "patterns/manifest.json"
   ],
   "source_fingerprint": {
-    "mace.scad": "98fc938fe93bf35f82960d4f48e6c446d32620858d6929b7c175bac94c2779ae",
-    "export.py": "82ef0393eaf6a711ff491b1e7295f09d00949105e8c1c82804378b47edd077f7"
+    "mace.scad": "fd36c92f3f011ee76a453e6b1c88f0982278f561066c2fd4d4bb3b95208f17ac",
+    "export.py": "7566ba7474717ad2804497038f530f35e5079130a835cad7604eb89907974275"
   },
   "bevel_mm": 6,
   "margin_mm": 10,

@@ -489,10 +489,10 @@ def _mesh(filename, cad, height):
 
 
 def _groove_floor(cad, z):
-    """Blade inner-edge radius at holder-local z: the floor of its groove."""
+    """Blade inner-edge radius at holder-local z: the floor of its groove (none below the blade base)."""
     z += cad["holder_span"][0]
     edge = cad["blade_inner_edge"]
-    return next(ra+(rb-ra)*(z-za)/(zb-za) for (ra, za), (rb, zb) in zip(edge, edge[1:]) if zb <= z <= za)
+    return next((ra+(rb-ra)*(z-za)/(zb-za) for (ra, za), (rb, zb) in zip(edge, edge[1:]) if zb <= z <= za), math.inf)
 
 
 def _holder_mesh(filename, cad, part):

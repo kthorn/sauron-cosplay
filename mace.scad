@@ -99,8 +99,7 @@ blade_points = design(concat(
     head(bez([58, 57], [52, 64], [50, 76])),
     [[50, 76], [51.5, 99], [65, 101], [57, 116], [61.5, 125], [32, 425.275]],
     tail(bez([32, 425.275], [23.5, 330], [23.5, 262])),
-    // Leave the root through the groove-end vertex of the printed holder (cut from
-    // the original 295 mm blade's edge), so existing prints still fit.
+    // Leave the root through the original blade's groove-end vertex.
     tail(bez([23.5, 262], [23, 250], bez([36, 295.275], [31, 252], [18.5, 240])[7])),
     [[18.5, 240]],
     arc([18.5, 192], 16, 90, -90, 12),
@@ -109,9 +108,8 @@ blade_points = design(concat(
     tail(bez([35, 97], [35, 76], [18.5, 62]))
 ));
 // Inner edge, tip to base: its radial shadow is the only groove in the holder.
-// Below the raised base the groove keeps its root floor through the collar, as printed.
 blade_tip = [for (i = [0:len(blade_points)-1]) if (blade_points[i][1] == max([for (p = blade_points) p[1]])) i][0];
-blade_inner_edge = [for (i = [blade_tip:len(blade_points)-1]) blade_points[i], blade_points[0], [slot_root_radius, 0]];
+blade_inner_edge = [for (i = [blade_tip:len(blade_points)-1]) blade_points[i], blade_points[0]];
 parameters = [
     ["overall_length", overall_length], ["blade_length", blade_length], ["spear_extension", spear_extension],
     ["head_radius", head_radius], ["pipe_od", pipe_od],
@@ -170,13 +168,14 @@ module core_cutouts(height) {
             cube([adapter_radius-slot_root_radius+1, slot_width, height+2]);
 }
 // Grooves exist only where a blade meets the core: each is the radial shadow of
-// the blade's inner edge, so blades still insert radially and seat on the lands.
+// the blade's inner edge, so blades still insert radially. Grooves stop at the
+// blade base, leaving the collar below solid as a ledge the blades sit on.
 module blade_grooves() {
     for (i = [0:5]) rotate([0, 0, i*60]) translate([0, 0, -holder_start])
         rotate([90, 0, 0]) linear_extrude(slot_width, center=true)
-            polygon(concat([[head_radius+1, -1], [head_radius+1, blade_top+1],
+            polygon(concat([[head_radius+1, blade_points[0][1]], [head_radius+1, blade_top+1],
                             [blade_inner_edge[0][0], blade_top+1]],
-                           blade_inner_edge, [[slot_root_radius, -1]]));
+                           blade_inner_edge));
 }
 module adapter(height=adapter_height) {
     difference() {

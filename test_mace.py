@@ -251,14 +251,16 @@ class TestCad(unittest.TestCase):
                         (flat, 25.7, 150, True), (flat, 26.2, 150, False),
                         (flat, 21.2, 205, True), (flat, 22.0, 205, False),
                         # Grooves only where the blade root meets the core.
-                        (vertex, 18.3, 45, True), (vertex, 18.7, 45, False),  # base root
+                        (vertex, 25.0, 45, True),  # solid collar below the blade base
+                        (vertex, 18.3, 58, True), (vertex, 18.7, 58, False),  # base root
                         (vertex, 18.3, 150, True), (vertex, 18.7, 150, False),  # middle root
                         (vertex, 25.0, 192, True),  # solid core seen through the bite
                         (vertex, 21.0, 90, False)]:  # waist inside the lower opening
                     point = (radius*math.cos(angle), radius*math.sin(angle), blade_z-37)
                     self.assertEqual(contains(point), expected, (i, radius, blade_z))
-            # Full print starts 37 mm above blade base. The pointed tip ends
-            # 12 mm short of the 295.275 mm EVA tips; no PVC cut changes.
+            # Full print starts 37 mm above the reference zero, 18 mm below the
+            # blade base. The pointed tip ends 12 mm short of the original
+            # 295.275 mm blade length, a third of the blade below the spear tips.
             self.assertAlmostEqual(max(v[2] for v in vertices), 246.275, delta=.01)
             self.assertTrue(contains((0, 0, 245.9)))
             self.assertFalse(contains((0, 0, 246.5)))
