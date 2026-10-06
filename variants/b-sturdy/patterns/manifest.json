@@ -7,7 +7,7 @@
       "pipe_od": 26.67,
       "bore_clearance": 0.5,
       "foam_thickness": 10,
-      "slot_clearance": 0.5,
+      "slot_clearance": 0.3,
       "adapter_od": 60,
       "adapter_height": 16,
       "slot_root_radius": 18.5,
@@ -243,7 +243,7 @@
       295.275
     ],
     "bore_diameter": 27.17,
-    "slot_width": 10.5,
+    "slot_width": 10.3,
     "stations": [
       45,
       225
@@ -595,7 +595,7 @@
   ],
   "source_fingerprint": {
     "blade_b_sturdy.scad": "ad8cee0288867e2b68702ca04bdb8bb887da39c46f8e79b9adeb377887c22057",
-    "mace.scad": "281dc20f1b3e9a6dbabedccc3872ecddb308ed591ff417078790e07b3abccd4d",
+    "mace.scad": "c76d9ef74f5cdf5f7ec0004a2dd410cf3a7f1f2a3ae6be8e3fe40d995b8321fd",
     "blade_shapes.scad": "a98151fb76e82f9e1f591940763b925e25961cbdfc96bb85bc9e03215bf44501",
     "export.py": "826b3ddf823fe35c65785be4db4ba747cde5859da9c2de2d2c31b85ba128b4af"
   },

@@ -55,7 +55,7 @@ class TestCad(unittest.TestCase):
         m = model.read_model()
         self.assertEqual(m["blade_bounds"], [18.5, 0, 65, 295.275])
         self.assertAlmostEqual(m["bore_diameter"], 27.17, places=3)
-        self.assertAlmostEqual(m["slot_width"], 10.5, places=3)
+        self.assertAlmostEqual(m["slot_width"], 10.3, places=3)
         self.assertEqual(m["stations"], [45, 225])
         self.assertEqual(m["land_bands"], [[34, 56], [214, 236]])
         self.assertEqual(m["pipe_span"], [15, 854])
@@ -66,7 +66,7 @@ class TestCad(unittest.TestCase):
     def test_measured_sizes(self):
         m = model.read_model({"pipe_od": 27, "foam_thickness": 12})
         self.assertAlmostEqual(m["bore_diameter"], 27.5, places=3)
-        self.assertAlmostEqual(m["slot_width"], 12.5, places=3)
+        self.assertAlmostEqual(m["slot_width"], 12.3, places=3)
         self.assertAlmostEqual(m["blade_bounds"][3], 295.275, places=3)
 
     def test_scaled_stations_fixed_lands(self):
@@ -202,7 +202,7 @@ class TestCad(unittest.TestCase):
             target = Path(directory) / "holder-lower.stl"
             for height in [16, 6]:  # thin mounting band cannot supply a width probe
                 cad = model.read_model({"adapter_height": height})
-                for thickness in [8.5, 12]:  # actual widths 9.0 and 12.5 vs required 10.5
+                for thickness in [8.5, 12]:  # actual widths 8.8 and 12.3 vs required 10.3
                     with self.subTest(height=height, thickness=thickness):
                         model.run_scad("holder_lower", target, {"adapter_height": height, "foam_thickness": thickness})
                         with self.assertRaisesRegex(ValueError, "slot|channel"):
@@ -450,7 +450,7 @@ class TestExports(unittest.TestCase):
         self.assertEqual(list(elsewhere.iterdir()), [])
         cad = json.loads((self.root / "patterns/manifest.json").read_text())["cad"]
         self.assertEqual(cad["bore_diameter"], 27.5)
-        self.assertEqual(cad["slot_width"], 12.5)
+        self.assertEqual(cad["slot_width"], 12.3)
 
     def test_unsafe_manifest_paths(self):
         victim = self.parent / "keep-me.txt"
