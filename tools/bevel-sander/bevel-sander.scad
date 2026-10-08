@@ -1,4 +1,4 @@
-// End brackets that turn a 1x2 furring strip into a 35-degree bevel sanding block.
+// End brackets that turn a furring strip into a 35-degree bevel sanding block.
 //
 // End view (looking along the strip):
 //
@@ -14,7 +14,7 @@
 // Units: mm. Print one "left" and one "right" (mirror images), end cap down.
 
 /* [Wood strip] */
-wood_width = 38.1;      // the face that carries sandpaper (1.5 in)
+wood_width = 41.3;      // the face that carries sandpaper (1 5/8 in)
 wood_thickness = 19.05; // (0.75 in)
 wood_clearance = 0.6;   // total, added to both pocket dimensions
 paper_thickness = 0.6;  // sandpaper (plus glue) on the front face
