@@ -27,6 +27,7 @@ thread_d = 19.05;       // 3/4 in nose thread, as on the 3000/4000/4300/8220
 thread_pitch = 25.4 / 12;
 thread_clearance = 0.5; // on diameter; raise if the test ring is tight
 thread_length = 12;
+thread_chamfer = 0.8;   // 45-degree lead-in at the thread's entry (the bed face)
 shoulder_to_drum = 30;  // nose shoulder (where the cap seats) to the drum's top end
 collet_d = 18;          // clear bore in front of the thread
 
@@ -71,6 +72,12 @@ module thread_rod(d, p, length) {
         polygon(section);
 }
 
+// 45-degree lead-in cone, from past the thread crest down to its root.
+module lead_in()
+    translate([0, 0, -0.01]) cylinder(r1 = (thread_d + thread_clearance) / 2 + thread_chamfer,
+        r2 = (thread_d + thread_clearance) / 2 - 5 / 8 * sqrt(3) / 2 * thread_pitch,
+        h = thread_chamfer + 5 / 8 * sqrt(3) / 2 * thread_pitch);
+
 module collar() on_axis(t_shoulder) cylinder(d = collar_od, h = thread_length);
 
 // Back end runs parallel to the tool axis so it prints as a vertical wall.
@@ -103,6 +110,7 @@ module jig() {
             foot_slab(-foot_width / 2, foot_width / 2);
         }
         on_axis(t_shoulder - 1) thread_rod(thread_d + thread_clearance, thread_pitch, thread_length + 2);
+        on_axis(t_shoulder) lead_in();
         on_axis(t_shoulder + thread_length - 0.01) cylinder(d = collet_d, h = shoulder_to_drum - thread_length - 2);
         on_axis(t_top - 12) cylinder(r = r + drum_clearance, h = 100);
         foam_side();
@@ -114,6 +122,7 @@ module thread_test() {
     difference() {
         cylinder(d = collar_od, h = 6, $fn = 6);
         translate([0, 0, -0.5]) thread_rod(thread_d + thread_clearance, thread_pitch, 7);
+        lead_in();
     }
 }
 

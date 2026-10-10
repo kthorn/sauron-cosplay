@@ -21,7 +21,16 @@ sand until the front edge sits on the green line.
 
 1. Unscrew the Dremel's nose cap and try the **thread test** ring on the nose. It should spin on by hand without wobbling. If it's tight, raise `thread_clearance` (0.5 → 0.7). If it's sloppy, lower it. Re-export both files after any change.
    The 3/4 in-12 thread comes from a forum post, not from Dremel. If the ring won't start at all, measure the nose thread and set `thread_d` and `thread_pitch`.
-2. Print the jig **collar-down**, as exported, with no supports. Use PLA or PETG, 0.2 mm layers, 3–4 walls and 20–30% infill. A brim helps, because it stands on the collar alone. The jig is about 44 × 38 × 34 mm.
+2. Print the jig **collar-down**, as exported, with no supports. Use PLA or PETG, 3–4 walls and 20–30% infill. A brim helps, because it stands on the collar alone. The jig is about 44 × 38 × 34 mm.
+
+**Thread quality (A1 mini).** Print the test ring and the jig with the **same settings**, or the fit you find won't carry over.
+- **Layer height:** use 0.12 mm ("0.12mm Fine @BBL A1M"). That gives about 18 layers per turn of the 2.1 mm pitch, instead of about 10 at 0.20 mm. To save time, apply 0.12 mm only to the bottom 13 mm with a height range modifier.
+- **Seam:** set it to Aligned or Back, so it's one line you can trim.
+- **Outer wall speed:** about 100 mm/s.
+- **Elephant foot compensation:** leave it on.
+- **Hole compensation:** leave "X-Y hole compensation" at 0. Tune the fit with `thread_clearance` instead.
+
+Both parts have a 0.8 mm 45° lead-in at the thread entry (`thread_chamfer`). After printing, run the jig on and off the nose a few times. A rub of candle wax helps.
 
 ## Set up
 
